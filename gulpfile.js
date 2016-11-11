@@ -1,4 +1,3 @@
-
 var gulp = require('gulp')
     , nodemon = require('gulp-nodemon')
     , babel = require('gulp-babel')
@@ -7,18 +6,43 @@ var gulp = require('gulp')
 var cache = new Cache();
 
 gulp.task('compile', function () {
-    var stream = gulp.src('src/*.js') // your ES2015 code
-        .pipe(cache.filter()) // remember files
-        .pipe(babel()) // compile new ones
-        .pipe(cache.cache()) // cache them
-        .pipe(gulp.dest('public/javascripts')) // write them
-    return stream // important for gulp-nodemon to wait for completion
+    var foo = [
+        'src/app.js',
+        'src/users.js',
+        'src/index.js',
+        'src/main.js'
+    ]
+    foo.forEach(function(n){
+        var stream = gulp.src(n)
+            .pipe(cache.filter()) // remember files
+            .pipe(babel()) // compile new ones
+            .pipe(cache.cache()) // cache them
+        switch (n){
+    case foo[0]:
+        stream.pipe(gulp.dest(''))
+        return stream
+        break;
+    case foo[1]:
+        stream.pipe(gulp.dest('routes'))
+        return stream
+        break;
+    case foo[2]:
+         stream.pipe(gulp.dest('routes'))
+         return stream
+         break;
+    case foo[3]:
+         stream.pipe(gulp.dest('public/javascripts'))
+         return stream
+         break;
+    }
+})
+
 })
 
 gulp.task('watch', ['compile'], function () {
     var stream = nodemon({
         script: 'bin/www' // run ES5 code
-        , watch: 'src' // watch ES2015 code
+        , watch: ['src', 'routes'] // watch ES2015 code
         , tasks: ['compile'] // compile synchronously onChange
     })
 
